@@ -1,8 +1,19 @@
 $(function () {
+    var shopId = getQueryString("shopId");
+    // 是否更新
+    var isEdit = shopId?true:false
     var initUrl = '/shopadmin/getshopinitinfo';
     var registerShopUrl = '/shopadmin/registershop';
+
+    var shopInfoUrl = "/o2o/shopamdin/getshopbyid?shopId=" + shopId;
+    var editShopUrl = '/o2o/shop/modifyshop';
     // alert(initUrl)
-    getShopInitInfo();
+    if(!isEdit){
+        getShopInitInfo();
+    }else{
+        getShopInfo(shopId);
+    }
+
     function getShopInitInfo() {
         // 获取店铺分类和所属区域
         $.getJSON(initUrl, function (data) {
@@ -22,6 +33,7 @@ $(function () {
                 $('#area').html(tempAreaHtml);
             }
         });
+
         $('#submit').click(function () {
             var shop = {};
             shop.shopName = $('#shop-name').val();
@@ -53,7 +65,7 @@ $(function () {
             }
             formData.append('verifyCodeActual', verifyCodeActual);
             $.ajax({
-                url:registerShopUrl,
+                url:(isEdit?editShopUrl:registerShopUrl),
                 type:"POST",
                 data:formData,
                 contentType:false,
@@ -70,4 +82,29 @@ $(function () {
             })
         })
     }
+
+
+    function getShopInfo(shopId) {
+		$.getJSON(shopInfoUrl, function(data) {
+			if (data.success) {
+				var shop = data.shop;
+				$('#shop-name').val(shop.shopName);
+				$('#shop-addr').val(shop.shopAddr);
+				$('#shop-phone').val(shop.phone);
+				$('#shop-desc').val(shop.shopDesc);
+				var shopCategory = '<option data-id="'
+						+ shop.shopCategory.shopCategoryId + '" selected>'
+						+ shop.shopCategory.shopCategoryName + '</option>';
+				var tempAreaHtml = '';
+				data.areaList.map(function(item, index) {
+					tempAreaHtml += '<option data-id="' + item.areaId + '">'
+							+ item.areaName + '</option>';
+				});
+				$('#shop-category').html(shopCategory);
+				$('#shop-category').attr('disabled','disabled');
+				$('#area').html(tempAreaHtml);
+				$('#area').attr('data-id',shop.areaId);
+			}
+		});
+	}
 })

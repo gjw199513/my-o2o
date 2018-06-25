@@ -8,6 +8,12 @@ import com.gjw.entity.Shop;
 public interface ShopDao {
 
     /**
+     * 通过shopid 查询店铺
+     * @param shopId
+     * @return
+     */
+    Shop queryByShopId(long shopId);
+    /**
      * 新增店铺
      * @param shop
      * @return

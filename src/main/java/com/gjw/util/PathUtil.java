@@ -18,7 +18,7 @@ public class PathUtil {
 
         String basePath = "";
         if(os.toLowerCase().startsWith("win")){
-            basePath = "G:/java程序/my-o2o";
+            basePath = "D:/java程序/my-o2o";
         }else {
             basePath = "/home/199513/image/";
         }

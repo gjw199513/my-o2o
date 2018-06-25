@@ -7,6 +7,7 @@ import com.gjw.entity.PersonInfo;
 import com.gjw.entity.Shop;
 import com.gjw.entity.ShopCategory;
 import com.gjw.enums.ShopStateEnum;
+import com.gjw.exceptions.ShopOperationException;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -49,5 +50,16 @@ public class ShopServiceTest extends BaseTest {
         InputStream is = new FileInputStream(shopImg);
         ShopExecution se = shopService.addShop(shop,is, shopImg.getName());
         assertEquals(ShopStateEnum.CHECK.getState(),se.getState());
+    }
+
+    @Test
+    public void testModifyShop() throws ShopOperationException,FileNotFoundException{
+        Shop shop = new Shop();
+        shop.setShopId(1l);
+        shop.setShopName("修改后的店铺名称");
+        File shopImg = new File("D:\\java程序\\my-o2o\\src\\main\\resources\\watermark.jpg");
+        InputStream is = new FileInputStream(shopImg);
+        ShopExecution shopExecution= shopService.modifyShop(shop, is, "watermark.jpg");
+        System.out.println("新的图片地址"+shopExecution.getShop().getShopImg());
     }
 }
