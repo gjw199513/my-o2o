@@ -130,6 +130,9 @@ public class ShopManagementController {
                 se = shopService.addShop(shop, shopImg.getInputStream(), shopImg.getOriginalFilename());
                 if (se.getState() == ShopStateEnum.CHECK.getState()) {
                     modelMap.put("success", true);
+                    // 若shop创建成功，则加入session中，作为权限使用
+					@SuppressWarnings("unchecked")
+					List<Shop> shopList = (List<Shop>) request.getSession();
                 } else {
                     modelMap.put("success", false);
                     modelMap.put("errMsg", se.getStateInfo());
@@ -242,15 +245,15 @@ public class ShopManagementController {
                     se = shopService.modifyShop(shop, shopImg.getInputStream(), shopImg.getOriginalFilename());
                 }
 
-                if (se.getState() == ShopStateEnum.CHECK.getState()) {
+                if (se.getState() == ShopStateEnum.SUCCESS.getState()) {
                     modelMap.put("success", true);
                     // 将该用户可以操作的店铺列表放入session
-                    List<Shop> shopList = (List<Shop>) request.getSession().getAttribute("shopList");
-                    if (shopList == null || shopList.size() == 0) {
-                        shopList = new ArrayList<Shop>();
-                    }
-                    shopList.add(se.getShop());
-                    request.getSession().setAttribute("shopList", shopList);
+//                    List<Shop> shopList = (List<Shop>) request.getSession().getAttribute("shopList");
+//                    if (shopList == null || shopList.size() == 0) {
+//                        shopList = new ArrayList<Shop>();
+//                    }
+//                    shopList.add(se.getShop());
+//                    request.getSession().setAttribute("shopList", shopList);
                 } else {
                     modelMap.put("success", false);
                     modelMap.put("errMsg", se.getStateInfo());
@@ -260,7 +263,7 @@ public class ShopManagementController {
                 modelMap.put("errMsg", e.getMessage());
             } catch (IOException e) {
                 modelMap.put("success", false);
-                modelMap.put("errMsg", se.getStateInfo());
+                modelMap.put("errMsg", e.getMessage());
             }
             return modelMap;
         } else
@@ -270,5 +273,53 @@ public class ShopManagementController {
             modelMap.put("errMsg", "请输入店铺id");
             return modelMap;
         }
+    }
+
+    @RequestMapping(value = "/getshoplist", method = RequestMethod.GET)
+    @ResponseBody
+    private Map<String, Object> getShopList(HttpServletRequest request){
+        Map<String,Object> modelMap = new HashMap<String, Object>();
+
+        PersonInfo user = new PersonInfo();
+        user.setUserId(1l);
+        user.setName("test");
+        request.getSession().setAttribute("user",user);
+        user = (PersonInfo) request.getSession().getAttribute("user");
+        try {
+            Shop shopCondition = new Shop();
+            shopCondition.setOwner(user);
+            ShopExecution se = shopService.getShopList(shopCondition,0, 100);
+            modelMap.put("shopList",se.getShopList());
+            modelMap.put("user",user);
+            modelMap.put("success",true);
+        }catch (Exception e){
+            modelMap.put("success",false);
+            modelMap.put("errMsg",e.getMessage());
+        }
+        return modelMap;
+    }
+
+    @RequestMapping(value = "/getshopmanagementinfo", method = RequestMethod.GET)
+    @ResponseBody
+    private Map<String , Object> getShopManagementInfo(HttpServletRequest request){
+        Map<String ,Object> modelMap = new HashMap<String, Object>();
+        long shopId = HTTPServletRequestUtil.getLong(request,"shopId");
+        if(shopId <= 0) {
+            Object currentShopObj = request.getSession().getAttribute("currentShop");
+            if (currentShopObj == null) {
+                modelMap.put("redirect", true);
+                modelMap.put("url", "/shopadmin/shoplist");
+            } else {
+                Shop currentShop = (Shop) currentShopObj;
+                modelMap.put("redirect", false);
+                modelMap.put("shopId", currentShop.getShopId());
+            }
+        }else {
+            Shop currentShop = new Shop();
+            currentShop.setShopId(shopId);
+            request.getSession().setAttribute("currentShop", currentShop);
+            modelMap.put("redirect",false);
+        }
+        return modelMap;
     }
 }

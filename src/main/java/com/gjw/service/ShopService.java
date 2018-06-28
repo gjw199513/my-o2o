@@ -32,6 +32,7 @@ public interface ShopService {
 
     /**
      * 注册店铺信息，包括图片处理
+     *
      * @param shop
      * @param shopImgInputStream
      * @param fileName
@@ -39,4 +40,14 @@ public interface ShopService {
      * @throws ShopOperationException
      */
     ShopExecution addShop(Shop shop, InputStream shopImgInputStream, String fileName) throws ShopOperationException;
+
+    /**
+     * 根据shopCondition分页返回相应店铺列表
+     * @param shopCondition
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     */
+    ShopExecution getShopList(Shop shopCondition,int pageIndex, int pageSize);
+
 }

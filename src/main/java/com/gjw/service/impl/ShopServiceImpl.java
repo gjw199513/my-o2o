@@ -7,6 +7,7 @@ import com.gjw.enums.ShopStateEnum;
 import com.gjw.exceptions.ShopOperationException;
 import com.gjw.service.ShopService;
 import com.gjw.util.ImageUtil;
+import com.gjw.util.PageCalculator;
 import com.gjw.util.PathUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by gjw19 on 2018/6/24.
@@ -63,6 +65,7 @@ public class ShopServiceImpl implements ShopService {
         }
         return new ShopExecution(ShopStateEnum.CHECK, shop);
     }
+
 
     private void addShopImg(Shop shop, InputStream shopImgInputStream, String fileName) {
         // 获取shop图片目录的相对路径
@@ -117,5 +120,28 @@ public class ShopServiceImpl implements ShopService {
                 throw new ShopOperationException("modifyShop error: " + e.getMessage());
             }
         }
+    }
+
+    /**
+     * 根据shopCondition分页返回相应店铺列表
+     *
+     * @param shopCondition
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     */
+    public ShopExecution getShopList(Shop shopCondition, int pageIndex, int pageSize) {
+        // 返回从第几行开始取数据
+        int rowIndex =PageCalculator.calculateRowIndex(pageIndex,pageSize);
+        List<Shop> shopList = shopDao.queryShopList(shopCondition, rowIndex, pageSize);
+        int count = shopDao.queryShopCount(shopCondition);
+        ShopExecution se = new ShopExecution();
+        if(shopList != null){
+            se.setShopList(shopList);
+            se.setCount(count);
+        }else {
+            se.setState(ShopStateEnum.INNER_ERROR.getState());
+        }
+        return se;
     }
 }

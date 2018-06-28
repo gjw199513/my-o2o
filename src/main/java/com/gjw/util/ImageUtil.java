@@ -118,8 +118,8 @@ public class ImageUtil {
                 for(int i=0;i<files.length;i++){
                     files[i].delete();
                 }
-                fileOrPath.delete();
             }
+            fileOrPath.delete();
         }
     }
 
