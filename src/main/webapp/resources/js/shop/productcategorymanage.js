@@ -78,6 +78,7 @@ $(function () {
             success: function (data) {
                 if (data.success) {
                     $.toast('提交成功！');
+                    // 重新调取函数，保证数据更新
                     getList();
                 } else {
                     $.toast('提交失败！');
@@ -97,6 +98,7 @@ $(function () {
                 $('.category-wrap').append(tempHtml);
             });
 
+    // 已存入数据库的标签删除
     $('.category-wrap').on('click', '.row-product-category.now .delete',
         function (e) {
             var target = e.currentTarget;
@@ -121,6 +123,7 @@ $(function () {
             });
         });
 
+    // 未存入数据库的标签删除
     $('.category-wrap').on('click', '.row-product-category.temp .delete',
         function (e) {
             console.log($(this).parent().parent());

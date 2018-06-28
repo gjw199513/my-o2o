@@ -2,7 +2,9 @@ package com.gjw.dao;
 
 import com.gjw.BaseTest;
 import com.gjw.entity.ProductCategory;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -14,6 +16,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * Created by Administrator on 2018/6/28.
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ProductCategoryDaoTest extends BaseTest {
 
     @Autowired
@@ -48,6 +51,19 @@ public class ProductCategoryDaoTest extends BaseTest {
 		int effectedNum = productCategoryDao
 				.batchInsertProductCategory(productCategoryList);
 		assertEquals(2, effectedNum);
+	}
+
+	@Test
+	public void testCDeleteProductCategory() throws Exception {
+		long shopId = 1;
+		List<ProductCategory> productCategoryList = productCategoryDao
+				.queryProductCategoryList(shopId);
+		int effectedNum = productCategoryDao.deleteProductCategory(
+				productCategoryList.get(0).getProductCategoryId(), shopId);
+		assertEquals(1, effectedNum);
+		effectedNum = productCategoryDao.deleteProductCategory(
+				productCategoryList.get(1).getProductCategoryId(), shopId);
+		assertEquals(1, effectedNum);
 	}
 
 }

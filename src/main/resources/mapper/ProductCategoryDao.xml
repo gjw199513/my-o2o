@@ -31,4 +31,11 @@
         </foreach>
     </insert>
 
+    <delete id="deleteProductCategory">
+        delete from
+        tb_product_category
+        where
+        product_category_id = #{productCategoryId}
+        and shop_id = #{shopId}
+    </delete>
 </mapper>
