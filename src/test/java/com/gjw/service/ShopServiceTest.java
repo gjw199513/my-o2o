@@ -1,6 +1,7 @@
 package com.gjw.service;
 
 import com.gjw.BaseTest;
+import com.gjw.dto.ImageHolder;
 import com.gjw.dto.ShopExecution;
 import com.gjw.entity.Area;
 import com.gjw.entity.PersonInfo;
@@ -49,7 +50,9 @@ public class ShopServiceTest extends BaseTest {
         shop.setAdvice("审核中");
         File shopImg = new File("E:\\慕课\\java-慕课\\SSM到Spring Boot-从零开发校园商铺平台 加\\images\\item\\headtitle\\2017061320315746624.jpg");
         InputStream is = new FileInputStream(shopImg);
-        ShopExecution se = shopService.addShop(shop,is, shopImg.getName());
+        ImageHolder imageHolder = new ImageHolder(is, shopImg.getName());
+
+        ShopExecution se = shopService.addShop(shop,imageHolder);
         assertEquals(ShopStateEnum.CHECK.getState(),se.getState());
     }
 
@@ -60,7 +63,8 @@ public class ShopServiceTest extends BaseTest {
         shop.setShopName("修改后的店铺名称");
         File shopImg = new File("D:\\java程序\\my-o2o\\src\\main\\resources\\watermark.jpg");
         InputStream is = new FileInputStream(shopImg);
-        ShopExecution shopExecution= shopService.modifyShop(shop, is, "watermark.jpg");
+        ImageHolder imageHolder = new ImageHolder(is, "watermark.jpg");
+        ShopExecution shopExecution= shopService.modifyShop(shop, imageHolder);
         System.out.println("新的图片地址"+shopExecution.getShop().getShopImg());
     }
 

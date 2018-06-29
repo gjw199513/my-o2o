@@ -1,5 +1,6 @@
 package com.gjw.service;
 
+import com.gjw.dto.ImageHolder;
 import com.gjw.dto.ShopExecution;
 import com.gjw.entity.Shop;
 import com.gjw.exceptions.ShopOperationException;
@@ -23,23 +24,21 @@ public interface ShopService {
     /**
      * 更新店铺信息，包括对图片的处理
      * @param shop
-     * @param shopImgInputStream
-     * @param fileName
+     * @param thumbnail
      * @return
      * @throws ShopOperationException
      */
-    ShopExecution modifyShop(Shop shop,InputStream shopImgInputStream,String fileName) throws ShopOperationException;
+    ShopExecution modifyShop(Shop shop, ImageHolder thumbnail) throws ShopOperationException;
 
     /**
      * 注册店铺信息，包括图片处理
      *
      * @param shop
-     * @param shopImgInputStream
-     * @param fileName
+     * @param thumbnail
      * @return
      * @throws ShopOperationException
      */
-    ShopExecution addShop(Shop shop, InputStream shopImgInputStream, String fileName) throws ShopOperationException;
+    ShopExecution addShop(Shop shop, ImageHolder thumbnail) throws ShopOperationException;
 
     /**
      * 根据shopCondition分页返回相应店铺列表

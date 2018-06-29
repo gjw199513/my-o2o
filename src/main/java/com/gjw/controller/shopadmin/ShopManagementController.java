@@ -1,6 +1,7 @@
 package com.gjw.controller.shopadmin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gjw.dto.ImageHolder;
 import com.gjw.dto.ShopExecution;
 import com.gjw.entity.Area;
 import com.gjw.entity.PersonInfo;
@@ -127,7 +128,8 @@ public class ShopManagementController {
 //            }
             ShopExecution se = null;
             try {
-                se = shopService.addShop(shop, shopImg.getInputStream(), shopImg.getOriginalFilename());
+                ImageHolder imageHolder = new ImageHolder(shopImg.getInputStream(), shopImg.getOriginalFilename());
+                se = shopService.addShop(shop, imageHolder);
                 if (se.getState() == ShopStateEnum.CHECK.getState()) {
                     modelMap.put("success", true);
                     // 若shop创建成功，则加入session中，作为权限使用
@@ -240,9 +242,10 @@ public class ShopManagementController {
             ShopExecution se = null;
             try {
                 if (shopImg == null) {
-                    se = shopService.modifyShop(shop, null, null);
+                    se = shopService.modifyShop(shop, null);
                 } else {
-                    se = shopService.modifyShop(shop, shopImg.getInputStream(), shopImg.getOriginalFilename());
+                    ImageHolder imageHolder = new ImageHolder(shopImg.getInputStream(), shopImg.getOriginalFilename());
+                    se = shopService.modifyShop(shop, imageHolder);
                 }
 
                 if (se.getState() == ShopStateEnum.SUCCESS.getState()) {

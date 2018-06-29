@@ -1,5 +1,6 @@
 package com.gjw.util;
 
+import com.gjw.dto.ImageHolder;
 import net.coobird.thumbnailator.Thumbnails;
 import net.coobird.thumbnailator.geometry.Positions;
 import org.jaxen.BaseXPath;
@@ -11,7 +12,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -30,13 +33,13 @@ public class ImageUtil {
     /**
      * 生成水印图片
      *
-     * @param thumbnailInputStream
+     * @param thumbnail
      * @param targetAddr
      * @return
      */
-    public static String generateThumbnail(InputStream thumbnailInputStream,String fileName, String targetAddr) {
+    public static String generateThumbnail(ImageHolder thumbnail, String targetAddr) {
         String realFileName = getRandomFileName();
-        String extension = getFileExtension(fileName);
+        String extension = getFileExtension(thumbnail.getImageName());
         makeDirPath(targetAddr);
         String relativeAddr = targetAddr + realFileName + extension;
         File dest = new File(PathUtil.geteImgBasePath() + relativeAddr);
@@ -44,7 +47,7 @@ public class ImageUtil {
             // 解决路径带中文的问题
             String newBasePath = URLDecoder.decode(basePath,"UTF-8");
 
-            Thumbnails.of(thumbnailInputStream).size(200, 200)
+            Thumbnails.of(thumbnail.getImage()).size(200, 200)
                     .watermark(Positions.BOTTOM_RIGHT, ImageIO.read(new File(newBasePath + "watermark.jpg")), 0.25f)
                     .outputQuality(0.8f).toFile(dest);
         } catch (IOException e) {
@@ -122,5 +125,48 @@ public class ImageUtil {
             fileOrPath.delete();
         }
     }
+	public static String generateNormalImg(ImageHolder thumbnail, String targetAddr) {
+		// 获取不重复的随机名
+        String realFileName = getRandomFileName();
+        // 获取文件的扩展名
+        String extension = getFileExtension(thumbnail.getImageName());
+        makeDirPath(targetAddr);
+        // 获取文件存储的相对路径(带文件名)
+        String relativeAddr = targetAddr + realFileName + extension;
+        // 获取文件要保存到的目标路径
+        File dest = new File(PathUtil.geteImgBasePath() + relativeAddr);
+        try {
+            // 解决路径带中文的问题
+            String newBasePath = URLDecoder.decode(basePath,"UTF-8");
 
+            Thumbnails.of(thumbnail.getImage()).size(337, 640)
+                    .watermark(Positions.BOTTOM_RIGHT, ImageIO.read(new File(newBasePath + "watermark.jpg")), 0.25f)
+                    .outputQuality(0.9f).toFile(dest);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return relativeAddr;
+    }
+
+//    public static List<String> generateNormalImgs(List<CommonsMultipartFile> imgs, String targetAddr) {
+//		int count = 0;
+//		List<String> relativeAddrList = new ArrayList<String>();
+//		if (imgs != null && imgs.size() > 0) {
+//			makeDirPath(targetAddr);
+//			for (CommonsMultipartFile img : imgs) {
+//				String realFileName = ImageUtil.getRandomFileName();
+//				String extension = getFileExtension(img);
+//				String relativeAddr = targetAddr + realFileName + count + extension;
+//				File dest = new File(ImageUtil.getImgBasePath() + relativeAddr);
+//				count++;
+//				try {
+//					Thumbnails.of(img.getInputStream()).size(600, 300).outputQuality(0.5f).toFile(dest);
+//				} catch (IOException e) {
+//					throw new RuntimeException("创建图片失败：" + e.toString());
+//				}
+//				relativeAddrList.add(relativeAddr);
+//			}
+//		}
+//		return relativeAddrList;
+//	}
 }
