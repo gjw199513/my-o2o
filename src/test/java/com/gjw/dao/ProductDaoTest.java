@@ -79,60 +79,74 @@ public class ProductDaoTest extends BaseTest {
 		assertEquals(1, effectedNum);
 	}
 
-//	@Test
-//	public void testBQueryProductList() throws Exception {
-//		Product product = new Product();
-//		List<Product> productList = productDao.queryProductList(product, 0, 3);
-//		assertEquals(3, productList.size());
-//		int count = productDao.queryProductCount(product);
-//		assertEquals(4, count);
-//		product.setProductName("测试");
-//		productList = productDao.queryProductList(product, 0, 3);
-//		assertEquals(3, productList.size());
-//		count = productDao.queryProductCount(product);
-//		assertEquals(3, count);
-//		Shop shop = new Shop();
-//		shop.setShopId(2L);
+	@Test
+	public void testBQueryProductList() throws Exception {
+		Product product = new Product();
+		List<Product> productList = productDao.queryProductList(product, 0, 3);
+		// 分页查询，预期返回三条结果
+		assertEquals(3, productList.size());
+
+		// 查询名称为测试的商品总数
+		int count = productDao.queryProductCount(product);
+		assertEquals(5, count);
+		product.setProductName("测试");
+		productList = productDao.queryProductList(product, 0, 3);
+		assertEquals(3, productList.size());
+		count = productDao.queryProductCount(product);
+		assertEquals(3, count);
+		Shop shop = new Shop();
+//		shop.setShopId(1L);
 //		product.setShop(shop);
 //		productList = productDao.queryProductList(product, 0, 3);
 //		assertEquals(1, productList.size());
 //		count = productDao.queryProductCount(product);
 //		assertEquals(1, count);
-//	}
+	}
 
-//	@Test
-//	public void testCQueryProductByProductId() throws Exception {
-//		long productId = 1;
-//		ProductImg productImg1 = new ProductImg();
-//		productImg1.setImgAddr("图片1");
-//		productImg1.setImgDesc("测试图片1");
-//		productImg1.setPriority(1);
-//		productImg1.setCreateTime(new Date());
-//		productImg1.setProductId(productId);
-//		ProductImg productImg2 = new ProductImg();
-//		productImg2.setImgAddr("图片2");
-//		productImg2.setPriority(1);
-//		productImg2.setCreateTime(new Date());
-//		productImg2.setProductId(productId);
-//		List<ProductImg> productImgList = new ArrayList<ProductImg>();
-//		productImgList.add(productImg1);
-//		productImgList.add(productImg2);
-//		int effectedNum = productImgDao.batchInsertProductImg(productImgList);
-//		assertEquals(2, effectedNum);
-//		Product product = productDao.queryProductByProductId(productId);
-//		assertEquals(2, product.getProductImgList().size());
-//		effectedNum = productImgDao.deleteProductImgByProductId(productId);
-//		assertEquals(2, effectedNum);
-//	}
-//
-//	@Test
-//	public void testDUpdateProduct() throws Exception {
-//		Product product = new Product();
-//		product.setProductId(1L);
-//		product.setProductName("第一个产品");
-//		int effectedNum = productDao.updateProduct(product);
-//		assertEquals(1, effectedNum);
-//	}
+	@Test
+	public void testCQueryProductByProductId() throws Exception {
+		long productId = 1;
+		ProductImg productImg1 = new ProductImg();
+		productImg1.setImgAddr("图片1");
+		productImg1.setImgDesc("测试图片1");
+		productImg1.setPriority(1);
+		productImg1.setCreateTime(new Date());
+		productImg1.setProductId(productId);
+		ProductImg productImg2 = new ProductImg();
+		productImg2.setImgAddr("图片2");
+		productImg2.setPriority(1);
+		productImg2.setCreateTime(new Date());
+		productImg2.setProductId(productId);
+		List<ProductImg> productImgList = new ArrayList<ProductImg>();
+		productImgList.add(productImg1);
+		productImgList.add(productImg2);
+		int effectedNum = productImgDao.batchInsertProductImg(productImgList);
+		assertEquals(2, effectedNum);
+		Product product = productDao.queryProductByProductId(productId);
+		assertEquals(2, product.getProductImgList().size());
+		effectedNum = productImgDao.deleteProductImgByProductId(productId);
+		assertEquals(2, effectedNum);
+	}
+
+	//
+	@Test
+	public void testDUpdateProduct() throws Exception {
+		Product product = new Product();
+		product.setProductId(1L);
+		product.setProductName("第一个产品");
+		Shop shop = new Shop();
+		shop.setShopId(1l);
+		product.setShop(shop);
+		int effectedNum = productDao.updateProduct(product);
+		assertEquals(1, effectedNum);
+	}
+
+	@Test
+	public void testUpdateProductCategorytToNull() {
+		// 将productCategory为2的商品类别下面的商品的商品类别置为空
+		int effectedNum = productDao.updateProductCategoryToNull(2l);
+		assertEquals(1, effectedNum);
+	}
 //
 //	@Ignore
 //	@Test

@@ -1,6 +1,7 @@
 package com.gjw.service.impl;
 
 import com.gjw.dao.ProductCategoryDao;
+import com.gjw.dao.ProductDao;
 import com.gjw.dto.ProductCategoryExecution;
 import com.gjw.entity.ProductCategory;
 import com.gjw.enums.ProductCategoryStateEnum;
@@ -21,6 +22,8 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     @Autowired
     private ProductCategoryDao productCategoryDao;
 
+    @Autowired
+    private ProductDao productDao;
     /**
      * 查询指定某个店铺下的所有商品类别信息
      *
@@ -59,7 +62,18 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
      */
     @Transactional
     public ProductCategoryExecution deleteProductCategory(long productCategoryId, long shopId) throws ProductCategoryOperationException {
-        // todo 将此商品类别下的商品的类别id置为空
+        // 将此商品类别下的商品的类别id置为空
+        // 解除tb_product里的商品与该productCategoryId的关联
+        try {
+            int effectedNum = productDao.updateProductCategoryToNull(productCategoryId);
+            if (effectedNum < 0) {
+                throw new ProductCategoryOperationException("商品类别更新失败");
+            }
+        } catch (Exception e) {
+            throw new ProductCategoryOperationException("deleteProductCategory error:" + e.getMessage());
+        }
+
+        // 删除该productCategory
         try {
             int effectedNum = productCategoryDao.deleteProductCategory(productCategoryId, shopId);
             if (effectedNum <= 0) {

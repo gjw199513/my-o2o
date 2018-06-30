@@ -1,12 +1,10 @@
 package com.gjw.service;
 
 import com.gjw.BaseTest;
+import com.gjw.dao.ProductDao;
 import com.gjw.dto.ImageHolder;
 import com.gjw.dto.ProductExecution;
-import com.gjw.entity.Area;
-import com.gjw.entity.Product;
-import com.gjw.entity.ProductCategory;
-import com.gjw.entity.Shop;
+import com.gjw.entity.*;
 import com.gjw.enums.ProductStateEnum;
 import com.gjw.exceptions.ShopOperationException;
 import org.junit.Test;
@@ -60,5 +58,40 @@ public class ProductServiceTest extends BaseTest {
         // 添加商品并验证
         ProductExecution pe = productService.addProduct(product,thumbnail,productImgList);
         assertEquals(ProductStateEnum.SUCCESS.getState(),pe.getState());
+    }
+
+    @Test
+    public void testModifyProduct() throws ShopOperationException, FileNotFoundException {
+        // 创建shopId为1切productCategoryId为1的商品实例并给其成员变量赋值
+        Product product = new Product();
+        Shop shop = new Shop();
+        shop.setShopId(1l);
+        ProductCategory pc = new ProductCategory();
+        pc.setProductCategoryId(1l);
+        product.setProductId(1l);
+        product.setShop(shop);
+        product.setProductCategory(pc);
+        product.setProductName("正式商品1");
+        product.setProductDesc("正式商品1");
+//        // 创建缩略图文件流
+//        File thumbnailFile = new File("D:\\SSM到Spring Boot-从零开发校园商铺平台 加\\images\\item\\shop\\28\\2017082500103690946.png");
+//        product.setPriority(20);
+//        product.setCreateTime(new Date());
+//        product.setEnableStatus(ProductStateEnum.SUCCESS.getState());
+        // 创建缩略图文件流
+        File thumbnailFile = new File("D:\\SSM到Spring Boot-从零开发校园商铺平台 加\\images\\item\\shop\\28\\2017082500103690946.png");
+        InputStream is = new FileInputStream(thumbnailFile);
+        ImageHolder thumbnail = new ImageHolder(is, thumbnailFile.getName());
+        // 创建两个商品详情图文件流并将它们添加到详情图列表中
+        File productImg1 = new File("D:\\SSM到Spring Boot-从零开发校园商铺平台 加\\images\\item\\headtitle\\2017061320393452772.jpg");
+        InputStream is1 = new FileInputStream(productImg1);
+        File productImg2 = new File("D:\\SSM到Spring Boot-从零开发校园商铺平台 加\\images\\item\\headtitle\\2017061320371786788.jpg");
+        InputStream is2 = new FileInputStream(productImg2);
+        List<ImageHolder> productImgList = new ArrayList<ImageHolder>();
+        productImgList.add(new ImageHolder(is1, productImg1.getName()));
+        productImgList.add(new ImageHolder(is2, productImg2.getName()));
+        // 添加商品并验证
+        ProductExecution pe = productService.modifyProduct(product, thumbnail, productImgList);
+        assertEquals(ProductStateEnum.SUCCESS.getState(), pe.getState());
     }
 }
