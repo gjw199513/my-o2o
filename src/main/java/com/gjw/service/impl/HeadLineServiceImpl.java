@@ -6,7 +6,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import com.gjw.cache.JedisUtil;
 import com.gjw.dao.HeadLineDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,35 +28,41 @@ import com.gjw.util.ImageUtil;
 
 @Service
 public class HeadLineServiceImpl implements HeadLineService {
-    //	@Autowired
-//	private JedisUtil.Strings jedisStrings;
-//	@Autowired
-//	private JedisUtil.Keys jedisKeys;
+    @Autowired
+    private JedisUtil.Strings jedisStrings;
+    @Autowired
+    private JedisUtil.Keys jedisKeys;
     @Autowired
     private HeadLineDao headLineDao;
     private static String HLLISTKEY = "headlinelist";
+    private static Logger logger = LoggerFactory.getLogger(HeadLineServiceImpl.class);
 
-    @Override
+    @Transactional
     public List<HeadLine> getHeadLineList(HeadLine headLineCondition)
             throws IOException {
-//		List<HeadLine> headLineList = null;
-//		ObjectMapper mapper = new ObjectMapper();
-//		String key = HLLISTKEY;
-//		if (headLineCondition.getEnableStatus() != null) {
-//			key = key + "_" + headLineCondition.getEnableStatus();
-//		}
-//		if (!jedisKeys.exists(key)) {
-//			headLineList = headLineDao.queryHeadLine(headLineCondition);
-//			String jsonString = mapper.writeValueAsString(headLineList);
-//			jedisStrings.set(key, jsonString);
-//		} else {
-//			String jsonString = jedisStrings.get(key);
-//			JavaType javaType = mapper.getTypeFactory()
-//					.constructParametricType(ArrayList.class, HeadLine.class);
-//			headLineList = mapper.readValue(jsonString, javaType);
-//		}
-//		return headLineList;
-        return headLineDao.queryHeadLine(headLineCondition);
+        // 定义接收对象
+        List<HeadLine> headLineList = null;
+        // 定义jackson数据转换操作类
+        ObjectMapper mapper = new ObjectMapper();
+        // 定义redis的key前缀
+        String key = HLLISTKEY;
+        // 拼接出redis的key
+        if (headLineCondition.getEnableStatus() != null) {
+            key = key + "_" + headLineCondition.getEnableStatus();
+        }
+        // 判断key是否存在
+        if (!jedisKeys.exists(key)) {
+            // 若不存在，则从数据库里面取出相应数据
+            headLineList = headLineDao.queryHeadLine(headLineCondition);
+            String jsonString = mapper.writeValueAsString(headLineList);
+            jedisStrings.set(key, jsonString);
+        } else {
+            String jsonString = jedisStrings.get(key);
+            JavaType javaType = mapper.getTypeFactory()
+                    .constructParametricType(ArrayList.class, HeadLine.class);
+            headLineList = mapper.readValue(jsonString, javaType);
+        }
+        return headLineList;
     }
 
 //	@Override

@@ -11,7 +11,7 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringJUnit4ClassRunner.class)
 // 告诉junit spring配置文件
 @ContextConfiguration({
-//		"classpath:spring/spring-redis.xml",
+        "classpath:spring/spring-redis.xml",
 		"classpath:spring/spring-dao.xml",
 		"classpath:spring/spring-service.xml" })
 public class BaseTest {

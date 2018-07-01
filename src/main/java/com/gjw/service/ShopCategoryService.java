@@ -2,6 +2,7 @@ package com.gjw.service;
 
 import com.gjw.entity.ShopCategory;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -14,5 +15,5 @@ public interface ShopCategoryService {
      * @param shopCategoryCondition
      * @return
      */
-    List<ShopCategory> getShopCategoryList(ShopCategory shopCategoryCondition);
+    List<ShopCategory> getShopCategoryList(ShopCategory shopCategoryCondition) throws IOException;
 }
