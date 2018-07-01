@@ -35,7 +35,7 @@ public class ShopDaoTest extends BaseTest {
         Area area = new Area();
         ShopCategory shopCategory = new ShopCategory();
         owner.setUserId(1l);
-        area.setAreaId(2);
+        area.setAreaId(2l);
         shopCategory.setShopCategoryId(1l);
         shop.setOwner(owner);
         shop.setArea(area);
@@ -66,21 +66,33 @@ public class ShopDaoTest extends BaseTest {
 
     @Test
     public void testQueryShopList(){
+//        Shop shopCondition = new Shop();
+//        PersonInfo owner = new PersonInfo();
+//        owner.setUserId(1l);
+//        shopCondition.setOwner(owner);
+//        List<Shop> shopList = shopDao.queryShopList(shopCondition,0,5);
+//        System.out.println("店铺列表的大小："+shopList.size());
+//        int count = shopDao.queryShopCount(shopCondition);
+//        System.out.println("店铺总数:"+count);
+//
+//        ShopCategory sc = new ShopCategory();
+//        sc.setShopCategoryId(2l);
+//        shopCondition.setShopCategory(sc);
+//        shopList = shopDao.queryShopList(shopCondition,0,2);
+//        System.out.println("xin店铺列表的大小" + shopList.size());
+//        count = shopDao.queryShopCount(shopCondition);
+//        System.out.println("xin店铺总数"+count);
+
         Shop shopCondition = new Shop();
-        PersonInfo owner = new PersonInfo();
-        owner.setUserId(1l);
-        shopCondition.setOwner(owner);
+        ShopCategory childCategory = new ShopCategory();
+        ShopCategory parentCategory = new ShopCategory();
+        parentCategory.setShopCategoryId(1l);
+        childCategory.setParent(parentCategory);
+        shopCondition.setShopCategory(childCategory);
         List<Shop> shopList = shopDao.queryShopList(shopCondition,0,5);
         System.out.println("店铺列表的大小："+shopList.size());
         int count = shopDao.queryShopCount(shopCondition);
         System.out.println("店铺总数:"+count);
 
-        ShopCategory sc = new ShopCategory();
-        sc.setShopCategoryId(2l);
-        shopCondition.setShopCategory(sc);
-        shopList = shopDao.queryShopList(shopCondition,0,2);
-        System.out.println("xin店铺列表的大小" + shopList.size());
-        count = shopDao.queryShopCount(shopCondition);
-        System.out.println("xin店铺总数"+count);
     }
 }

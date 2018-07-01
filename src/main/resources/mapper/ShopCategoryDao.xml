@@ -13,11 +13,14 @@
         parent_id
         from tb_shop_category
         <where>
+            <if test="shopCategoryCondition == null">
+                and parent_id is null
+            </if>
             <!--限制该类别为子类别，即存在parent_id-->
             <if test="shopCategoryCondition != null">
                 and parent_id is not null
             </if>
-            <if test="shopCategoryCondition.parent != null">
+            <if test="shopCategoryCondition != null and shopCategoryCondition.parent != null">
                 and parent_id = #{shopCategoryCondition.parent.shopCategoryId}
             </if>
         </where>
