@@ -34,7 +34,7 @@ public class HeadLineServiceImpl implements HeadLineService {
     private JedisUtil.Keys jedisKeys;
     @Autowired
     private HeadLineDao headLineDao;
-    private static String HLLISTKEY = "headlinelist";
+
     private static Logger logger = LoggerFactory.getLogger(HeadLineServiceImpl.class);
 
     @Transactional

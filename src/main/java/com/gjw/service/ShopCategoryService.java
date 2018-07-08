@@ -9,6 +9,9 @@ import java.util.List;
  * Created by gjw19 on 2018/6/24.
  */
 public interface ShopCategoryService {
+
+    public static final String SCLISTKEY = "shopcategorylist";
+
     /**
      * 根据查询条件获取ShopCategory列表
      *

@@ -32,7 +32,6 @@ public class AreaServiceImpl implements AreaService {
     @Autowired
     private JedisUtil.Strings jedisStrings;
 
-    private static String AREALISTKEY = "arealist";
 
     private static Logger logger = LoggerFactory.getLogger(AreaServiceImpl.class);
 
@@ -44,6 +43,7 @@ public class AreaServiceImpl implements AreaService {
      */
     @Transactional
     public List<Area> getAreaList() {
+        //
         String key = AREALISTKEY;
         List<Area> areaList = null;
         ObjectMapper mapper = new ObjectMapper();
